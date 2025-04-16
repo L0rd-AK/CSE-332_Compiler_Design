@@ -6,10 +6,24 @@
 
 %option noyywrap
 
+/* Define exclusive start conditions for comments */
+%x SINGLE_COMMENT
+%x MULTI_COMMENT
+
 %%
 
 "mytype"    { return MYTYPE; }
 "show"      { return SHOW; }
+
+"//"        { BEGIN(SINGLE_COMMENT); } /* Single line comment start */
+<SINGLE_COMMENT>\n { BEGIN(INITIAL); } /* Return to normal mode at end of line */
+<SINGLE_COMMENT>.  { /* Ignore everything in single-line comment */ }
+
+"/*"        { BEGIN(MULTI_COMMENT); } /* Multi-line comment start */
+<MULTI_COMMENT>"*/" { BEGIN(INITIAL); } /* Multi-line comment end */
+<MULTI_COMMENT>\n   { /* Ignore newlines in multi-line comments */ }
+<MULTI_COMMENT>.    { /* Ignore everything in multi-line comments */ }
+
 [a-zA-Z]+   { yylval.str = strdup(yytext); return ID; }
 [0-9]+      { yylval.num = atoi(yytext); return NUMBER; }
 ";"         { return ';'; }
