@@ -1,8 +1,14 @@
 #include<stdio.h>
 int main(){
     int a,b,c,d;
+    // this is comment
     printf("Enter three numbers: ");
     d = a+b+c;
+    /*
+     multi
+	line
+	comment
+    */
     printf("Sum is: %d", d);
     return 0;
 }
