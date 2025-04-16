@@ -18,7 +18,7 @@ extern TokenNode* token_list;
 
 // Function to print tokens by category
 void print_token_list() {
-    printf("\nToken List\n");
+    printf("\n==Token List==\n");
     
     // Create arrays for each category
     char* preprocessor[100] = {0};
@@ -133,42 +133,42 @@ void print_token_list() {
     
     // Print tokens by category
     if (p_count > 0) {
-        printf("Preprocessor Directive:\n");
+        printf("=Preprocessor Directive:=\n");
         for (int i = p_count - 1; i >= 0; i--) {
             printf("%s\n", preprocessor[i]);
         }
     }
     
     if (k_count > 0) {
-        printf("Keywords:\n");
+        printf("=Keywords:=\n");
         for (int i = 0; i < k_count; i++) {
             printf("%s\n", keywords[i]);
         }
     }
     
     if (i_count > 0) {
-        printf("Identifiers:\n");
+        printf("=Identifiers:=\n");
         for (int i = 0; i < i_count; i++) {
             printf("%s\n", identifiers[i]);
         }
     }
     
     if (o_count > 0) {
-        printf("Operators:\n");
+        printf("=Operators:=\n");
         for (int i = 0; i < o_count; i++) {
             printf("%s\n", operators[i]);
         }
     }
     
     if (l_count > 0) {
-        printf("Literals:\n");
+        printf("=Literals:=\n");
         for (int i = 0; i < l_count; i++) {
             printf("%s\n", literals[i]);
         }
     }
     
     if (punct_count > 0) {
-        printf("Punctuation/Symbols:\n");
+        printf("=Punctuation/Symbols:=\n");
         for (int i = 0; i < punct_count; i++) {
             printf("%s\n", punctuation[i]);
         }
