@@ -1,0 +1,43 @@
+Processed include directive: <stdio.h>
+Declared variable: a
+Declared variable: b
+Declared variable: c
+Declared variable: d
+Printf statement with format: "Enter three numbers: "
+Assigned 0 to variable d
+Syntax Error: syntax error
+
+==Token List==
+=Preprocessor Directive:=
+#include
+<stdio.h>
+=Keywords:=
+int
+main
+=Identifiers:=
+printf
+c
+b
+a
+d
+=Operators:=
++ (addition)
++ (addition)
+= (assignment)
+=Literals:=
+"Sum is: %d" (string)
+"Enter three numbers: " (string)
+=Punctuation/Symbols:=
+, (comma, in variable declarations)
+() (parentheses)
+; (semicolon)
+; (semicolon)
+() (parentheses)
+() (parentheses)
+; (semicolon)
+, (comma, in variable declarations)
+, (comma, in variable declarations)
+, (comma, in variable declarations)
+{} (curly braces)
+() (parentheses)
+() (parentheses)
