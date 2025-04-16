@@ -1,0 +1,8 @@
+int a;
+a = 10;
+int b;
+// this ic commet
+b = a + 5 * 2;
+show(a);
+show(b);
+(a + b) / 3;

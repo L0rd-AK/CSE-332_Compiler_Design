@@ -7,6 +7,18 @@
 void yyerror(const char* msg);
 int yylex(void);
 
+// External file pointer from flex
+extern FILE* yyin;
+
+// Token list structure
+typedef struct TokenNode {
+    char* token;
+    char* type;
+    struct TokenNode* next;
+} TokenNode;
+
+extern TokenNode* token_list;
+
 typedef struct Symbol {
     char* name;
     int value;
@@ -40,9 +52,6 @@ void yyerror(const char* msg) {
     fprintf(stderr, "Syntax Error: %s\n", msg);
 }
 
-// For tracking line numbers in error reporting
-extern int yylineno;
-
 %}
 
 %union {
@@ -50,45 +59,112 @@ extern int yylineno;
     char* str;
 }
 
-%token MYTYPE SHOW IF ELSE WHILE
+%token MYTYPE SHOW
+%token INT CHAR FLOAT DOUBLE VOID
+%token IF ELSE WHILE FOR RETURN
+%token PRINTF SCANF INCLUDE
+%token <str> ID STRING HEADER_FILE
 %token <num> NUMBER
-%token <str> ID
-%token '=' '+' '-' '*' '/' '(' ')' ';' '{' '}'
-%token EQ NEQ LT GT LTE GTE
+%token '=' '+' '-' '*' '/' '(' ')' ';' '{' '}' ',' '<' '>' '[' ']' '%'
 
-%type <num> expression condition
+%type <num> expression
+%type <str> type
 
-%left EQ NEQ LT GT LTE GTE
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 
 %%
 
 program:
-    | program statement
+    /* empty */
+    | program external_declaration
+;
+
+external_declaration:
+    include_directive
+    | function_definition
+    | declaration ';'
+;
+
+include_directive:
+    INCLUDE HEADER_FILE {
+        printf("Processed include directive: %s\n", $2);
+        free($2);
+    }
+;
+
+function_definition:
+    type ID '(' parameter_list ')' compound_statement {
+        printf("Defined function: %s\n", $2);
+        free($1);
+        free($2);
+    }
+;
+
+parameter_list:
+    /* empty */
+    | parameters
+;
+
+parameters:
+    parameter
+    | parameters ',' parameter
+;
+
+parameter:
+    type ID {
+        add_symbol($2);
+        printf("Parameter: %s\n", $2);
+        free($1);
+        free($2);
+    }
+;
+
+type:
+    INT { $$ = strdup("int"); }
+    | CHAR { $$ = strdup("char"); }
+    | FLOAT { $$ = strdup("float"); }
+    | DOUBLE { $$ = strdup("double"); }
+    | VOID { $$ = strdup("void"); }
+    | MYTYPE { $$ = strdup("mytype"); }
+;
+
+compound_statement:
+    '{' statement_list '}'
+;
+
+statement_list:
+    /* empty */
+    | statement_list statement
 ;
 
 statement:
     declaration ';'
     | assignment ';'
-    | show_stmt ';'
+    | function_call ';'
+    | return_statement ';'
     | expression ';' { printf("Expression result: %d\n", $1); }
-    | if_stmt
-    | while_stmt
-    | block
-;
-
-block:
-    '{' statements '}'
-;
-
-statements:
-    /* empty */
-    | statements statement
+    | compound_statement
+    | show_stmt ';'
 ;
 
 declaration:
-    MYTYPE ID { add_symbol($2); printf("Declared %s\n", $2); free($2); }
+    type declaration_list {
+        free($1);
+    }
+;
+
+declaration_list:
+    declarator
+    | declaration_list ',' declarator
+;
+
+declarator:
+    ID {
+        add_symbol($1);
+        printf("Declared variable: %s\n", $1);
+        free($1);
+    }
 ;
 
 assignment:
@@ -104,6 +180,48 @@ assignment:
     }
 ;
 
+function_call:
+    ID '(' argument_list ')' {
+        printf("Function call: %s\n", $1);
+        free($1);
+    }
+    | PRINTF '(' STRING argument_list ')' {
+        printf("Printf statement with format: %s\n", $3);
+        free($3);
+    }
+    | SCANF '(' STRING argument_list ')' {
+        printf("Scanf statement with format: %s\n", $3);
+        free($3);
+    }
+;
+
+argument_list:
+    /* empty */
+    | arguments
+;
+
+arguments:
+    expression
+    | STRING {
+        printf("String argument: %s\n", $1);
+        free($1);
+    }
+    | arguments ',' expression
+    | arguments ',' STRING {
+        printf("String argument: %s\n", $3);
+        free($3);
+    }
+;
+
+return_statement:
+    RETURN expression {
+        printf("Return statement with value: %d\n", $2);
+    }
+    | RETURN {
+        printf("Return statement with no value\n");
+    }
+;
+
 show_stmt:
     SHOW '(' ID ')' {
         Symbol* s = find_symbol($3);
@@ -111,31 +229,6 @@ show_stmt:
         else yyerror("Undeclared variable");
         free($3);
     }
-;
-
-if_stmt:
-    IF '(' condition ')' statement { 
-        printf("If statement executed\n"); 
-    }
-    | IF '(' condition ')' statement ELSE statement { 
-        printf("If-else statement executed\n"); 
-    }
-;
-
-while_stmt:
-    WHILE '(' condition ')' statement { 
-        printf("While loop executed\n"); 
-    }
-;
-
-condition:
-    expression EQ expression { $$ = ($1 == $3); }
-    | expression NEQ expression { $$ = ($1 != $3); }
-    | expression LT expression { $$ = ($1 < $3); }
-    | expression GT expression { $$ = ($1 > $3); }
-    | expression LTE expression { $$ = ($1 <= $3); }
-    | expression GTE expression { $$ = ($1 >= $3); }
-    | expression { $$ = ($1 != 0); }
 ;
 
 expression:
@@ -156,6 +249,14 @@ expression:
             $$ = 0;
         } else {
             $$ = $1 / $3; 
+        }
+    }
+    | expression '%' expression {
+        if ($3 == 0) {
+            yyerror("Modulo by zero");
+            $$ = 0;
+        } else {
+            $$ = $1 % $3;
         }
     }
 ;

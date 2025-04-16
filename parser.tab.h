@@ -41,17 +41,23 @@
    enum yytokentype {
      MYTYPE = 258,
      SHOW = 259,
-     IF = 260,
-     ELSE = 261,
-     WHILE = 262,
-     NUMBER = 263,
-     ID = 264,
-     EQ = 265,
-     NEQ = 266,
-     LT = 267,
-     GT = 268,
-     LTE = 269,
-     GTE = 270
+     INT = 260,
+     CHAR = 261,
+     FLOAT = 262,
+     DOUBLE = 263,
+     VOID = 264,
+     IF = 265,
+     ELSE = 266,
+     WHILE = 267,
+     FOR = 268,
+     RETURN = 269,
+     PRINTF = 270,
+     SCANF = 271,
+     INCLUDE = 272,
+     ID = 273,
+     STRING = 274,
+     HEADER_FILE = 275,
+     NUMBER = 276
    };
 #endif
 
@@ -62,7 +68,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 48 "parser.y"
+#line 57 "parser.y"
 
     int num;
     char* str;
@@ -70,7 +76,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 74 "parser.tab.h"
+#line 80 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
