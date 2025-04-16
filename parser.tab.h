@@ -46,18 +46,19 @@
      FLOAT = 262,
      DOUBLE = 263,
      VOID = 264,
-     IF = 265,
-     ELSE = 266,
-     WHILE = 267,
-     FOR = 268,
-     RETURN = 269,
-     PRINTF = 270,
-     SCANF = 271,
-     INCLUDE = 272,
-     ID = 273,
-     STRING = 274,
-     HEADER_FILE = 275,
-     NUMBER = 276
+     MAIN = 265,
+     IF = 266,
+     ELSE = 267,
+     WHILE = 268,
+     FOR = 269,
+     RETURN = 270,
+     PRINTF = 271,
+     SCANF = 272,
+     INCLUDE = 273,
+     ID = 274,
+     STRING = 275,
+     HEADER_FILE = 276,
+     NUMBER = 277
    };
 #endif
 
@@ -76,7 +77,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 80 "parser.tab.h"
+#line 81 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

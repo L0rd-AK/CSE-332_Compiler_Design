@@ -60,7 +60,7 @@ void yyerror(const char* msg) {
 }
 
 %token MYTYPE SHOW
-%token INT CHAR FLOAT DOUBLE VOID
+%token INT CHAR FLOAT DOUBLE VOID MAIN
 %token IF ELSE WHILE FOR RETURN
 %token PRINTF SCANF INCLUDE
 %token <str> ID STRING HEADER_FILE
@@ -98,6 +98,9 @@ function_definition:
         printf("Defined function: %s\n", $2);
         free($1);
         free($2);
+    }
+    | INT MAIN '(' parameter_list ')' compound_statement {
+        printf("Defined main function\n");
     }
 ;
 

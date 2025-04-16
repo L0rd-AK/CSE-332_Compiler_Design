@@ -47,6 +47,7 @@ void add_token(char* token, char* type) {
 }
 
 "int"           { add_token(yytext, "Keyword"); return INT; }
+"main"          { add_token(yytext, "Keyword"); return MAIN; }
 "char"          { add_token(yytext, "Keyword"); return CHAR; }
 "float"         { add_token(yytext, "Keyword"); return FLOAT; }
 "double"        { add_token(yytext, "Keyword"); return DOUBLE; }
