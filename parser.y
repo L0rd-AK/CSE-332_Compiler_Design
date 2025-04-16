@@ -40,6 +40,9 @@ void yyerror(const char* msg) {
     fprintf(stderr, "Syntax Error: %s\n", msg);
 }
 
+// For tracking line numbers in error reporting
+extern int yylineno;
+
 %}
 
 %union {
@@ -47,13 +50,15 @@ void yyerror(const char* msg) {
     char* str;
 }
 
-%token MYTYPE SHOW
+%token MYTYPE SHOW IF ELSE WHILE
 %token <num> NUMBER
 %token <str> ID
-%token '=' '+' '-' '*' '/' '(' ')' ';'
+%token '=' '+' '-' '*' '/' '(' ')' ';' '{' '}'
+%token EQ NEQ LT GT LTE GTE
 
-%type <num> expression
+%type <num> expression condition
 
+%left EQ NEQ LT GT LTE GTE
 %left '+' '-'
 %left '*' '/'
 
@@ -68,6 +73,18 @@ statement:
     | assignment ';'
     | show_stmt ';'
     | expression ';' { printf("Expression result: %d\n", $1); }
+    | if_stmt
+    | while_stmt
+    | block
+;
+
+block:
+    '{' statements '}'
+;
+
+statements:
+    /* empty */
+    | statements statement
 ;
 
 declaration:
@@ -96,6 +113,31 @@ show_stmt:
     }
 ;
 
+if_stmt:
+    IF '(' condition ')' statement { 
+        printf("If statement executed\n"); 
+    }
+    | IF '(' condition ')' statement ELSE statement { 
+        printf("If-else statement executed\n"); 
+    }
+;
+
+while_stmt:
+    WHILE '(' condition ')' statement { 
+        printf("While loop executed\n"); 
+    }
+;
+
+condition:
+    expression EQ expression { $$ = ($1 == $3); }
+    | expression NEQ expression { $$ = ($1 != $3); }
+    | expression LT expression { $$ = ($1 < $3); }
+    | expression GT expression { $$ = ($1 > $3); }
+    | expression LTE expression { $$ = ($1 <= $3); }
+    | expression GTE expression { $$ = ($1 >= $3); }
+    | expression { $$ = ($1 != 0); }
+;
+
 expression:
     NUMBER { $$ = $1; }
     | ID {
@@ -108,7 +150,14 @@ expression:
     | expression '+' expression { $$ = $1 + $3; }
     | expression '-' expression { $$ = $1 - $3; }
     | expression '*' expression { $$ = $1 * $3; }
-    | expression '/' expression { $$ = $1 / $3; }
+    | expression '/' expression { 
+        if ($3 == 0) {
+            yyerror("Division by zero");
+            $$ = 0;
+        } else {
+            $$ = $1 / $3; 
+        }
+    }
 ;
 
 %%

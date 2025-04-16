@@ -5,6 +5,7 @@
 %}
 
 %option noyywrap
+%option yylineno
 
 /* Define exclusive start conditions for comments */
 %x SINGLE_COMMENT
@@ -14,6 +15,16 @@
 
 "mytype"    { return MYTYPE; }
 "show"      { return SHOW; }
+"if"        { return IF; }
+"else"      { return ELSE; }
+"while"     { return WHILE; }
+
+"=="        { return EQ; }
+"!="        { return NEQ; }
+"<"         { return LT; }
+">"         { return GT; }
+"<="        { return LTE; }
+">="        { return GTE; }
 
 "//"        { BEGIN(SINGLE_COMMENT); } /* Single line comment start */
 <SINGLE_COMMENT>\n { BEGIN(INITIAL); } /* Return to normal mode at end of line */
@@ -34,7 +45,9 @@
 "/"         { return '/'; }
 "("         { return '('; }
 ")"         { return ')'; }
+"{"         { return '{'; }
+"}"         { return '}'; }
 [ \t\n]     ; /* Ignore whitespace */
-.           { fprintf(stderr, "Lex error: Invalid token '%s'\n", yytext); }
+.           { fprintf(stderr, "Lex error: Invalid token '%s' at line %d\n", yytext, yylineno); }
 
 %%

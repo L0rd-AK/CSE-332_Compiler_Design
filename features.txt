@@ -1,0 +1,19 @@
+These changes add:
+
+1. Control structures:
+   
+   - If-else statements for conditional execution
+   - While loops for repeated execution
+   - Code blocks with { } for grouping statements
+2. Comparison operators:
+   
+   - Equal (==)
+   - Not equal (!=)
+   - Less than (<)
+   - Greater than (>)
+   - Less than or equal (<=)
+   - Greater than or equal (>=)
+3. Improved error handling:
+   
+   - Line number tracking for better error messages
+   - Division by zero detection
