@@ -46,7 +46,8 @@ The compiler uses a symbol table to track variables and their values during exec
 flex lexer.l
 bison -d parser.y
 gcc lex.yy.c parser.tab.c main.c -o compiler
-
+```
 ### Execute
 ```bash
 compiler.exe input.txt
+```
