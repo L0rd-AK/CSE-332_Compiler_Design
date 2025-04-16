@@ -41,8 +41,12 @@ The compiler uses a symbol table to track variables and their values during exec
 - Bison (Parser Generator)
 - C compiler (GCC recommended)
 
-### Compilation Steps
+### Recompile
 ```bash
 flex lexer.l
 bison -d parser.y
 gcc lex.yy.c parser.tab.c main.c -o compiler
+
+### Execute
+```bash
+compiler.exe input.txt
