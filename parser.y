@@ -155,6 +155,7 @@ statement:
     | show_stmt ';'
     | if_statement
     | for_statement
+    | while_statement
 ;
 
 /* Add these new rules for if statements */
@@ -180,6 +181,13 @@ for_statement:
     }
     | FOR '(' assignment ';' expression ';' expression ')' statement {
         printf("Processed for loop with three parts\n");
+    }
+;
+
+/* Add new rules for while statements */
+while_statement:
+    WHILE '(' expression ')' statement {
+        printf("Processed while loop\n");
     }
 ;
 
