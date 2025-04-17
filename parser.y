@@ -9,6 +9,7 @@ int yylex(void);
 
 // External file pointer from flex
 extern FILE* yyin;
+extern int yylineno;
 
 // Token list structure
 typedef struct TokenNode {
@@ -49,7 +50,7 @@ void add_symbol(char* name) {
 }
 
 void yyerror(const char* msg) {
-    fprintf(stderr, "Syntax Error: %s\n", msg);
+    fprintf(stderr, "Syntax Error at line %d: %s\n", yylineno, msg);
 }
 
 %}
@@ -188,11 +189,15 @@ function_call:
         printf("Function call: %s\n", $1);
         free($1);
     }
-    | PRINTF '(' STRING argument_list ')' {
+    | PRINTF '(' STRING ')' {
         printf("Printf statement with format: %s\n", $3);
         free($3);
     }
-    | SCANF '(' STRING argument_list ')' {
+    | PRINTF '(' STRING ',' argument_list ')' {
+        printf("Printf statement with format: %s\n", $3);
+        free($3);
+    }
+    | SCANF '(' STRING ',' argument_list ')' {
         printf("Scanf statement with format: %s\n", $3);
         free($3);
     }

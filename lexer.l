@@ -22,7 +22,7 @@ void add_token(char* token, char* type) {
 
 %}
 
-%option noyywrap
+%option noyywrap yylineno
 
 /* Define exclusive start conditions for comments */
 %x SINGLE_COMMENT
