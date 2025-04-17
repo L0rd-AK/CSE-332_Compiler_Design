@@ -67,10 +67,14 @@ void yyerror(const char* msg) {
 %token <str> ID STRING HEADER_FILE
 %token <num> NUMBER
 %token '=' '+' '-' '*' '/' '(' ')' ';' '{' '}' ',' '<' '>' '[' ']' '%'
+%token EQ NEQ LT GT LTE GTE
+%token INC DEC  /* for ++ and -- */
 
 %type <num> expression
 %type <str> type
 
+%left EQ NEQ
+%left '<' '>' LTE GTE
 %left '+' '-'
 %left '*' '/' '%'
 
@@ -141,7 +145,6 @@ statement_list:
     /* empty */
     | statement_list statement
 ;
-
 statement:
     declaration ';'
     | assignment ';'
@@ -150,6 +153,34 @@ statement:
     | expression ';' { printf("Expression result: %d\n", $1); }
     | compound_statement
     | show_stmt ';'
+    | if_statement
+    | for_statement
+;
+
+/* Add these new rules for if statements */
+if_statement:
+    IF '(' expression ')' statement {
+        printf("Processed if statement\n");
+    }
+    | IF '(' expression ')' statement ELSE statement {
+        printf("Processed if-else statement\n");
+    }
+;
+
+/* Add these new rules for for statements */
+for_statement:
+    FOR '(' declaration expression ';' expression ')' statement {
+        printf("Processed for loop\n");
+    }
+    | FOR '(' assignment expression ';' expression ')' statement {
+        printf("Processed for loop\n");
+    }
+    | FOR '(' declaration ';' expression ';' expression ')' statement {
+        printf("Processed for loop with three parts\n");
+    }
+    | FOR '(' assignment ';' expression ';' expression ')' statement {
+        printf("Processed for loop with three parts\n");
+    }
 ;
 
 declaration:
@@ -167,6 +198,15 @@ declarator:
     ID {
         add_symbol($1);
         printf("Declared variable: %s\n", $1);
+        free($1);
+    }
+    | ID '=' expression {
+        add_symbol($1);
+        Symbol* s = find_symbol($1);
+        if (s) {
+            s->value = $3;
+            printf("Declared and initialized variable: %s with value %d\n", $1, $3);
+        }
         free($1);
     }
 ;
@@ -266,6 +306,58 @@ expression:
         } else {
             $$ = $1 % $3;
         }
+    }
+    | expression EQ expression { $$ = ($1 == $3); }
+    | expression NEQ expression { $$ = ($1 != $3); }
+    | expression '<' expression { $$ = ($1 < $3); }
+    | expression '>' expression { $$ = ($1 > $3); }
+    | expression LTE expression { $$ = ($1 <= $3); }
+    | expression GTE expression { $$ = ($1 >= $3); }
+    | ID INC { 
+        Symbol* s = find_symbol($1);
+        if (s) {
+            $$ = s->value++;
+            printf("Incrementing variable %s\n", $1);
+        } else {
+            yyerror("Undeclared variable");
+            $$ = 0;
+        }
+        free($1);
+    }
+    | ID DEC { 
+        Symbol* s = find_symbol($1);
+        if (s) {
+            $$ = s->value--;
+            printf("Decrementing variable %s\n", $1);
+        } else {
+            yyerror("Undeclared variable");
+            $$ = 0;
+        }
+        free($1);
+    }
+    | INC ID { 
+        Symbol* s = find_symbol($2);
+        if (s) {
+            s->value++;
+            $$ = s->value;
+            printf("Pre-incrementing variable %s\n", $2);
+        } else {
+            yyerror("Undeclared variable");
+            $$ = 0;
+        }
+        free($2);
+    }
+    | DEC ID { 
+        Symbol* s = find_symbol($2);
+        if (s) {
+            s->value--;
+            $$ = s->value;
+            printf("Pre-decrementing variable %s\n", $2);
+        } else {
+            yyerror("Undeclared variable");
+            $$ = 0;
+        }
+        free($2);
     }
 ;
 

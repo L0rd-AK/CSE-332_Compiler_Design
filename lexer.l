@@ -93,6 +93,12 @@ void add_token(char* token, char* type) {
 ";"             { add_token(yytext, "Punctuation"); return ';'; }
 ","             { add_token(yytext, "Punctuation"); return ','; }
 "="             { add_token(yytext, "Assignment Operator"); return '='; }
+"=="            { return EQ; }
+"!="            { return NEQ; }
+"<="            { return LTE; }
+">="            { return GTE; }
+"++"            { add_token(yytext, "Increment Operator"); return INC; }
+"--"            { add_token(yytext, "Decrement Operator"); return DEC; }
 "+"             { add_token(yytext, "Arithmetic Operator"); return '+'; }
 "-"             { add_token(yytext, "Arithmetic Operator"); return '-'; }
 "*"             { add_token(yytext, "Arithmetic Operator"); return '*'; }

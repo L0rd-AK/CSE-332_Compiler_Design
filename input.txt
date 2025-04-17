@@ -9,6 +9,11 @@ int main(){
 	line
 	comment
     */
+    for(int i=0;i<10;i++){
+        printf("%d",i);
+    }
+    int i=1,n=10;
+    while(i<n)i++;
     printf("Sum is: %d", d);
     return 0;
 }

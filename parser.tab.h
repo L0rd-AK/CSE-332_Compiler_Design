@@ -58,7 +58,15 @@
      ID = 274,
      STRING = 275,
      HEADER_FILE = 276,
-     NUMBER = 277
+     NUMBER = 277,
+     EQ = 278,
+     NEQ = 279,
+     LT = 280,
+     GT = 281,
+     LTE = 282,
+     GTE = 283,
+     INC = 284,
+     DEC = 285
    };
 #endif
 
@@ -77,7 +85,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 81 "parser.tab.h"
+#line 89 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
